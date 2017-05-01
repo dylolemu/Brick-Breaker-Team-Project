@@ -26,6 +26,7 @@ namespace BrickBreaker
             y = _y;
             hp = _hp;
             colour = _colour;
+            //Chchchchchangning
         }
     }
 }

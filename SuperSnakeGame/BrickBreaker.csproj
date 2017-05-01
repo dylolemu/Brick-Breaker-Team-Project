@@ -68,15 +68,23 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Paddle.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Screens\GameScreenMulti.cs">
+    <Compile Include="Screens\LoseScreen.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Screens\GameScreenMulti.Designer.cs">
-      <DependentUpon>GameScreenMulti.cs</DependentUpon>
+    <Compile Include="Screens\LoseScreen.Designer.cs">
+      <DependentUpon>LoseScreen.cs</DependentUpon>
     </Compile>
+    <Compile Include="Highscore.cs" />
+    <Compile Include="Paddle.cs" />
+    <Compile Include="PauseScreen.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PauseScreen.Designer.cs">
+      <DependentUpon>PauseScreen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PowerUps.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Screens\MenuScreen.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -89,6 +97,7 @@
     <Compile Include="Screens\GameScreen.Designer.cs">
       <DependentUpon>GameScreen.cs</DependentUpon>
     </Compile>
+    <Compile Include="PowerUp.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -102,8 +111,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="Screens\GameScreenMulti.resx">
-      <DependentUpon>GameScreenMulti.cs</DependentUpon>
+    <EmbeddedResource Include="Screens\LoseScreen.resx">
+      <DependentUpon>LoseScreen.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Screens\MenuScreen.resx">
       <DependentUpon>MenuScreen.cs</DependentUpon>

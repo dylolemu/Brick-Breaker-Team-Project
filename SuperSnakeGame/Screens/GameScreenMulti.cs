@@ -25,8 +25,12 @@ namespace SuperSnakeGame.Screens
         Boolean aKeyDown, sKeyDown, dKeyDown, wKeyDown, qKeyDown;
 
         // Game values
+
         int p1HP = 12;
         int p2HP = 12;
+
+        int lives, ticksSinceHit;
+
 
         // Paddle and Ball objects
         Paddle paddle, paddle2;
@@ -54,6 +58,9 @@ namespace SuperSnakeGame.Screens
             //display player hp's
             hpLabelp1.Text = "HP: " + p1HP.ToString();
             hpLabelp2.Text = "HP: " + p2HP.ToString();
+
+            //initializes ticks since hit counter
+            ticksSinceHit = 10;
 
             //set all button presses to false.
             leftArrowDown = downArrowDown = rightArrowDown = upArrowDown = false;
@@ -94,7 +101,52 @@ namespace SuperSnakeGame.Screens
             {
                 x += 57;
                 Block b1 = new Block(x, 10, 1, Color.White);
+
                 blocks2p.Add(b1);
+                blocks.Add(b1);
+            }
+
+            // start the game engine loop
+            gameTimer.Enabled = true;
+        }
+        //TODO change to work for 2p
+        private void gameTimer_Tick(object sender, EventArgs e)
+        {
+            // Move the paddle
+            if (leftArrowDown && paddle.x > 0)
+            {
+                paddle.Move("left");
+            }
+            if (rightArrowDown && paddle.x < (this.Width - paddle.width))
+            {
+                paddle.Move("right");
+            }
+
+            // Moves ball
+            ball.Move();
+
+            // Check for collision with top and side walls
+            ball.WallCollision(this);
+
+            // Check for collision of ball with paddle, (incl. paddle movement)
+            ticksSinceHit = ball.PaddleCollision(paddle, leftArrowDown, rightArrowDown, ticksSinceHit);
+
+            // Check if ball has collided with any blocks
+            foreach (Block b in blocks)
+            {
+                if (ball.BlockCollision(b))
+                {
+                    blocks.Remove(b);
+
+                    if (blocks.Count == 0)
+                    {
+                        gameTimer.Enabled = false;
+
+                        OnEnd();
+                    }
+
+                    break;
+                }
             }
             x = 10;
             while (blocks1p.Count < 12)
