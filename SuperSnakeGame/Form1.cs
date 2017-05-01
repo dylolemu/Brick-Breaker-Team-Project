@@ -31,7 +31,7 @@ namespace BrickBreaker
             MenuScreen ps = new MenuScreen();
             this.Controls.Add(ps);
 
-            ps.Location = new Point((this.Width - ps.Width) / 2, (this.Height - ps.Height) /2);
+            ps.Location = new Point((this.Width - ps.Width) / 2, (this.Height - ps.Height) / 2);
         }
     }
 }

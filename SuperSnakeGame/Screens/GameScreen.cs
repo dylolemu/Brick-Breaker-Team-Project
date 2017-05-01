@@ -45,7 +45,6 @@ namespace BrickBreaker.Screens
             OnStart();
         }
 
-
         public void OnStart()
         {
             //set life counter

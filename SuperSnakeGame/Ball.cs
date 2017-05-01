@@ -22,8 +22,7 @@ namespace BrickBreaker
             y = _y;
             xSpeed = _xSpeed;
             ySpeed = _ySpeed;
-            size = _ballSize;
-               
+            size = _ballSize;            
         }
 
         public void Move()
@@ -56,28 +55,29 @@ namespace BrickBreaker
         {
             Rectangle ballRec = new Rectangle(x, y, size, size);
             Rectangle paddleRec = new Rectangle(p.x, p.y, p.width, p.height);
+            Rectangle intersectionRec = Rectangle.Intersect(ballRec, paddleRec);
 
             if (ballRec.IntersectsWith(paddleRec))
             {
-                if (y + size >= p.y)
-                {
-                    // If the ball 
-                    if ((x) < p.x && (y + size) > p.y)
-                    {
-                        xSpeed = -Math.Abs(xSpeed);
-                        ySpeed = Math.Abs(ySpeed);
-                    }
-                    else if (x + size > (p.x + p.width) && (y + size) > p.y)
-                    {
-                        xSpeed = Math.Abs(xSpeed);
-                        ySpeed = -Math.Abs(ySpeed);
-                    }
-                    else
-                    {
-                        ySpeed *= -1;
-                    }
-                }
 
+                Point intersect = intersectionRec.Location;
+                int intersectX = intersect.X;
+
+
+                if (x < p.x && (y + size) > p.y)
+                {
+                    xSpeed = -Math.Abs(xSpeed);
+                    ySpeed = -Math.Abs(ySpeed);
+                }
+                else if (x + size > (p.x + p.width) && (y + size) > p.y)
+                {
+                    xSpeed = Math.Abs(xSpeed);
+                    ySpeed = -Math.Abs(ySpeed);
+                }
+                else
+                {
+                    ySpeed = -Math.Abs(ySpeed);
+                }
                 if (pMovingLeft)
                     xSpeed = -Math.Abs(xSpeed);
                 else if (pMovingRight)
@@ -90,12 +90,12 @@ namespace BrickBreaker
             // Collision with left wall
             if (x <= 0)
             {
-                xSpeed *= -1;
+                xSpeed = Math.Abs(xSpeed);
             }
             // Collision with right wall
             if (x >= (UC.Width - size))
             {
-                xSpeed *= -1;
+                xSpeed = -Math.Abs(xSpeed);
             }
             // Collision with top wall
             if (y <= 2)
@@ -115,6 +115,5 @@ namespace BrickBreaker
 
             return didCollide;
         }
-
     }
 }
