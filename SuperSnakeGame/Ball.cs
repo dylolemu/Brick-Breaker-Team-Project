@@ -25,8 +25,7 @@ namespace BrickBreaker
             y = _y;
             xSpeed = _xSpeed;
             ySpeed = _ySpeed;
-            size = _ballSize;
-               
+            size = _ballSize;            
         }
 
         public void Move()
@@ -60,31 +59,31 @@ namespace BrickBreaker
         {
             Rectangle ballRec = new Rectangle(x, y, size, size);
             Rectangle paddleRec = new Rectangle(p.x, p.y, p.width, p.height);
+            Rectangle intersectionRec = Rectangle.Intersect(ballRec, paddleRec);
 
             ticksSinceHit++;
 
             if (ballRec.IntersectsWith(paddleRec) && ticksSinceHit >= 60)
             {
-                if (y + size >= p.y)
-                {
-                    if ((x + size) < p.x && (y + size) > p.y)
-                    {
-                        xSpeed = -Math.Abs(xSpeed);
-                        ySpeed = Math.Abs(ySpeed);
 
-                    }
-                    else if (x > (p.x + p.width) && (y + size) > p.y)
-                    {
-                        xSpeed = Math.Abs(xSpeed);
-                        ySpeed = Math.Abs(ySpeed);
+                Point intersect = intersectionRec.Location;
+                int intersectX = intersect.X;
 
-                    }
-                    else
-                    {
-                        ySpeed *= -1;
-                    }                   
+
+                if (x < p.x && (y + size) > p.y)
+                    xSpeed = -Math.Abs(xSpeed);
+                    ySpeed = -Math.Abs(ySpeed);
                 }
+                else if (x + size > (p.x + p.width) && (y + size) > p.y)
+                {
+                    xSpeed = Math.Abs(xSpeed);
+                    ySpeed = -Math.Abs(ySpeed);
+                }
+                else
+                {
+                    ySpeed = -Math.Abs(ySpeed);
 
+                }
                 if (pMovingLeft)
                     xSpeed = -Math.Abs(xSpeed);
                 else if (pMovingRight)
@@ -140,6 +139,5 @@ namespace BrickBreaker
 
             return didCollide;
         }
-
     }
 }

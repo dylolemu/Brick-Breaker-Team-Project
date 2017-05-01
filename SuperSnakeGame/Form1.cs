@@ -1,4 +1,4 @@
-﻿//Stefan Thorburn
+
 //Copy of brick breaker game
 using System;
 using System.Collections.Generic;
@@ -44,7 +44,6 @@ namespace BrickBreaker
             // Start the program centred on the Menu Screen
             MenuScreen ps = new MenuScreen();
             this.Controls.Add(ps);
-
             
             ps.Location = new Point((this.Width - ps.Width) / 2, (this.Height - ps.Height) /2);
             //loadHighscores();
@@ -74,7 +73,6 @@ namespace BrickBreaker
                 }
                 highscoreList.Add(hs);
             }
-
         }
     }
 }
