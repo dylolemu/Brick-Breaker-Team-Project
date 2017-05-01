@@ -72,7 +72,8 @@ namespace BrickBreaker.Screens
             int paddleX = ((this.Width / 2) - (paddleWidth / 2));
             int paddleY = (this.Height - paddleHeight) - 60;
             int paddleSpeed = 8;
-            paddle = new Paddle(paddleX, paddleY, paddleWidth, paddleHeight, paddleSpeed, Color.White);
+            //add player 1 paddle
+            paddle = new Paddle(paddleX, paddleY, paddleWidth, paddleHeight, paddleSpeed, Color.White);          
 
             // setup starting ball values
             int ballX = ((this.Width / 2) - 10);
