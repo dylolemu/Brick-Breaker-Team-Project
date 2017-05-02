@@ -10,8 +10,7 @@ using System.Windows.Forms;
 using System.Media;
 using BrickBreaker;
 using BrickBreaker.Screens;
-
-namespace SuperSnakeGame.Screens
+namespace BrickBreaker.Screens
 {
     public partial class GameScreenMulti : UserControl
     {
@@ -101,17 +100,62 @@ namespace SuperSnakeGame.Screens
             while (blocks2p.Count < 12)
             {
                 x += 57;
-                Block b = new Block(x, 10, 1, Color.White);
-                blocks2p.Add(b);
+                Block b1 = new Block(x, 10, 1, Color.White);
+
+                blocks2p.Add(b1);
+                blocks.Add(b1);
+            }
+
+            // start the game engine loop
+            gameTimer.Enabled = true;
+        }
+        //TODO change to work for 2p
+        private void gameTimer_Tick(object sender, EventArgs e)
+        {
+            // Move the paddle
+            if (leftArrowDown && paddle.x > 0)
+            {
+                paddle.Move("left");
+            }
+            if (rightArrowDown && paddle.x < (this.Width - paddle.width))
+            {
+                paddle.Move("right");
+            }
+
+            // Moves ball
+            ball.Move();
+
+            // Check for collision with top and side walls
+            ball.WallCollision(this);
+
+            // Check for collision of ball with paddle, (incl. paddle movement)
+            ticksSinceHit = ball.PaddleCollision(paddle, leftArrowDown, rightArrowDown, ticksSinceHit);
+
+            // Check if ball has collided with any blocks
+            foreach (Block b in blocks)
+            {
+                if (ball.BlockCollision(b))
+                {
+                    blocks.Remove(b);
+
+                    if (blocks.Count == 0)
+                    {
+                        gameTimer.Enabled = false;
+
+                        OnEnd();
+                    }
+
+                    break;
+                }
             }
             x = 10;
             while (blocks1p.Count < 12)
             {
+                
                 x += 57;
-                Block b = new Block(x, 500, 1, Color.White);
-                blocks1p.Add(b);
+                Block b2 = new Block(x, 500, 1, Color.White);
+                blocks1p.Add(b2);
             }
-
 
             // start the game engine loop
             gameTimer.Enabled = true;
@@ -215,8 +259,6 @@ namespace SuperSnakeGame.Screens
 
         private void gameTimer_Tick(object sender, EventArgs e)
         {
-            ticksSinceHit++;
-
             // Move the paddle for p1
             if (leftArrowDown && paddle.x > 0)
             {
@@ -245,8 +287,8 @@ namespace SuperSnakeGame.Screens
 
             // Check for collision of ball with paddle, (incl. paddle movement)
 
-            ball.PaddleCollision(paddle, leftArrowDown, rightArrowDown , ticksSinceHit);
-            ball.PaddleCollision(paddle2, aKeyDown, dKeyDown, ticksSinceHit);
+            ball.PaddleCollision(paddle, leftArrowDown, rightArrowDown);
+            ball.PaddleCollision(paddle2, aKeyDown, dKeyDown);
 
             // Check if ball has collided with any of player 1 blocks
             foreach (Block b in blocks1p)

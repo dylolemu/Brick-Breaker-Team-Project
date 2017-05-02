@@ -27,6 +27,7 @@ namespace BrickBreaker.Screens
         {
             // Goes to the game screen
             GameScreen gs = new GameScreen();
+            
             Form form = this.FindForm(); 
 
             form.Controls.Add(gs);

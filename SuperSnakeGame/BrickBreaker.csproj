@@ -68,6 +68,12 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Screens\GameScreenMulti.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\GameScreenMulti.Designer.cs">
+      <DependentUpon>GameScreenMulti.cs</DependentUpon>
+    </Compile>
     <Compile Include="Screens\LoseScreen.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -111,6 +117,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Screens\GameScreenMulti.resx">
+      <DependentUpon>GameScreenMulti.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Screens\LoseScreen.resx">
       <DependentUpon>LoseScreen.cs</DependentUpon>
     </EmbeddedResource>
