@@ -21,9 +21,23 @@ namespace BrickBreaker.Screens
     {
         #region global values
 
+        #region Stefan and Jack's values
         // Creates powerup list
         List<PowerUp> powerUps = new List<PowerUp>();
         List<PowerUp> activePowerUps = new List<PowerUp>();
+
+        int longPaddleCounter = 0;
+        bool longPaddle = false;
+        bool magnet = false;
+        int magnetTimer = 0;
+        bool floor = false;
+        int floorTimer = 0;
+
+        Paddle floorPaddle;
+
+        SolidBrush powerupBrush = new SolidBrush(Color.Green);
+        SolidBrush floorBrush = new SolidBrush(Color.Cyan);
+        #endregion
 
         //player1 button control keys - DO NOT CHANGE
         Boolean leftArrowDown, downArrowDown, rightArrowDown, upArrowDown, spaceDown, escapeDown;
@@ -42,7 +56,6 @@ namespace BrickBreaker.Screens
         SolidBrush paddleBrush = new SolidBrush(Color.White);
         SolidBrush ballBrush = new SolidBrush(Color.White);
         SolidBrush blockBrush = new SolidBrush(Color.Red);
-        SolidBrush powerupBrush = new SolidBrush(Color.Green);
         #endregion
 
         //checkpoint
@@ -55,6 +68,11 @@ namespace BrickBreaker.Screens
 
         public void OnStart()
         {
+            #region Stefan and Jacks Powerups
+            //initiate floor paddle
+            floorPaddle = new Paddle(0, this.Height - 10, this.Width, 10, 0, Color.Cyan);
+            #endregion
+
             //set life counter
             lives = 3;
 
@@ -203,14 +221,55 @@ namespace BrickBreaker.Screens
                 paddle.Move("right");
             }
 
-            // Moves ball
-            ball.Move();
+            #region Stefan and Jacks PowerUps
+
+            if (magnetTimer > 0 && magnet == true)
+            {
+                magnetTimer--;
+            }
+            else if (magnetTimer <= 0 && magnet == true)
+            {
+                magnet = false;
+            }
+
+            if (longPaddle == true)
+            {
+                longPaddleCounter++;
+                if (longPaddleCounter >= 14 && paddle.width > 80)
+                {
+                    longPaddleCounter = 0;
+                    paddle.x++;
+                    paddle.width -= 2;
+                }
+                else if (paddle.width <= 80 && longPaddleCounter >= 14)
+                {
+                    longPaddleCounter = 0;
+                    longPaddle = false;
+                }
+            }
+
+            if (floor == true && floorTimer <= 0)
+            {
+                floor = false;
+            }
+            else if (floor == true && floorTimer > 0)
+            {
+                floorTimer--;
+                if (ball.PaddleCollision(floorPaddle, false, false, 100) == 0)
+                {
+                    floorTimer = 0;
+                }
+            }
 
             // Moves powerups
             MovePowerups(powerUps);
 
             // Check for collision with powerups and paddle
             CollidePowerUps(paddle);
+            #endregion
+
+            // Moves ball
+            ball.Move();
 
             // Check for collision with top and side walls
             ball.WallCollision(this);
@@ -285,8 +344,16 @@ namespace BrickBreaker.Screens
                 e.Graphics.FillRectangle(blockBrush, b.x, b.y, b.width, b.height);
             }
 
+            #region Stefan and Jacks Powerups
+            // Draws Powerups
             DrawPowerups(e);
-            
+
+            if (floor == true)
+            {
+                e.Graphics.FillRectangle(floorBrush, floorPaddle.x, floorPaddle.y, floorPaddle.width, floorPaddle.height);
+            }
+            #endregion
+
             // Draws balls
             e.Graphics.FillRectangle(ballBrush, ball.x, ball.y, ball.size, ball.size);
         }
@@ -298,7 +365,7 @@ namespace BrickBreaker.Screens
 
             if (n.Next(0, 1) == 0)
             {
-                PowerUp p = new PowerUp(brickX, brickY, 3, n.Next(0, 7));
+                PowerUp p = new PowerUp(brickX, brickY, 20, 3, n.Next(3, 4));
                 powerUps.Add(p);
             }
         }
@@ -307,7 +374,7 @@ namespace BrickBreaker.Screens
         {
             foreach(PowerUp p in powerUps)
             {
-                p.Move(paddle);
+                p.Move(paddle, magnet);
             }
         }
 
@@ -325,6 +392,31 @@ namespace BrickBreaker.Screens
             {
                 if (p.Collision(paddle) == true)
                 {
+                    switch (p.type)
+                    {
+                        case 0:
+                            magnet = true;
+                            magnetTimer = 800;
+                            break;
+                        case 1:
+                            longPaddle = true;
+                            paddle.x -= 40;
+                            paddle.width += 80;
+                            break;
+                        case 2:
+                            break;
+                        case 3:
+                            floor = true;
+                            floorTimer = 800;
+                            break;
+                        case 4:
+                            lives++;
+                            break;
+                        case 5:
+                            break;
+                        case 6:
+                            break;
+                    }
                     powerUps.Remove(p);
                     activePowerUps.Add(p);
                     break;
