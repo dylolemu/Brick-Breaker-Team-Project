@@ -37,6 +37,10 @@ namespace BrickBreaker.Screens
         // list of all blocks
         List<Block> blocks = new List<Block>();
 
+        //list of all balls
+        List<Ball> balls = new List<Ball>();
+
+
         // Brushes
         SolidBrush paddleBrush = new SolidBrush(Color.White);
         SolidBrush ballBrush = new SolidBrush(Color.White);
@@ -84,6 +88,7 @@ namespace BrickBreaker.Screens
             int ySpeed = 6;
             int ballSize = 20;
             ball = new Ball(ballX, ballY, xSpeed, ySpeed, ballSize);
+            balls.Add(ball);
 
             // Creates blocks for generic level
             blocks.Clear();
@@ -206,9 +211,11 @@ namespace BrickBreaker.Screens
                 paddle.Move("right");
             }
 
-            // Moves ball
-            ball.Move();
-
+            // Moves balls
+            foreach (Ball b in balls)
+            { 
+                ball.Move();
+            }
             // Moves powerups
             MovePowerups(powerUps);
 
@@ -219,24 +226,53 @@ namespace BrickBreaker.Screens
             ball.WallCollision(this);
 
             // Check for collision of ball with paddle, (incl. paddle movement)
-            ticksSinceHit = ball.PaddleCollision(paddle, leftArrowDown, rightArrowDown, ticksSinceHit);       
+            ticksSinceHit = ball.PaddleCollision(paddle, leftArrowDown, rightArrowDown, ticksSinceHit);
 
-            // Check if ball has collided with any blocks
-            foreach (Block b in blocks) 
+            foreach (Ball ba in balls)
             {
-                if (ball.BlockCollision(b))
 
-                {   
-                    //decreases struck block hp and removes blocks with hp 0
-                    b.hp--;
-                    if (b.hp == 0)
-                        blocks.Remove(b);
-                     
-                     Form1.currentScore += 100;
-                     
-                    GeneratePowerUp(b.x, b.y);
+                // Check if each ball has collided with any blocks
+                foreach (Block b in blocks)
+                {
+                    if (ba.BlockCollision(b))
 
-                    if (blocks.Count == 0)
+                    {
+                        //decreases struck block hp and removes blocks with hp 0
+                        b.hp--;
+                        if (b.hp == 0)
+                            blocks.Remove(b);
+
+                        Form1.currentScore += 100;
+
+                        GeneratePowerUp(b.x, b.y);
+
+                        if (blocks.Count == 0)
+                        {
+                            gameTimer.Enabled = false;
+
+                            OnEnd();
+                        }
+
+                        break;
+                    }
+                }
+
+                // Check for ball hitting bottom of screen
+                if (ba.BottomCollision(this))
+                {
+                    if (balls.Count > 1) { balls.Remove(ba); }
+                    else
+                    {
+                        lives--;
+
+                        // Moves the ball back to origin
+                        ba.x = ((paddle.x - (ba.size / 2)) + (paddle.width / 2));
+                        ba.y = (this.Height - paddle.height) - 85;
+                    }
+
+                    
+
+                    if (lives == 0)
                     {
                         gameTimer.Enabled = false;
 
@@ -244,23 +280,6 @@ namespace BrickBreaker.Screens
                     }
 
                     break;
-                }
-            }
-
-            // Check for ball hitting bottom of screen
-            if (ball.BottomCollision(this))
-            {
-                lives--;
-
-                // Moves the ball back to origin
-                ball.x = ((paddle.x - (ball.size / 2)) + (paddle.width / 2));
-                ball.y = (this.Height - paddle.height) - 85;
-
-                if (lives == 0)
-                {
-                    gameTimer.Enabled = false;
-
-                    OnEnd();
                 }
             }
 

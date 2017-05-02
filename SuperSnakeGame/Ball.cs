@@ -71,6 +71,7 @@ namespace BrickBreaker
 
 
                 if (x < p.x && (y + size) > p.y)
+                { 
                     xSpeed = -Math.Abs(xSpeed);
                     ySpeed = -Math.Abs(ySpeed);
                 }
