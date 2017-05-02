@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,7 +17,7 @@ namespace BrickBreaker
         /// <param name="_xCoord">X coordinate of the powerup</param>
         /// <param name="_yCoord">Y coordinate of the powerup</param>
         /// <param name="_fallSpeed">falling speed of the powerup</param>
-        /// <param name="_type">Type of Powerup (0 = magnet, 1 = long paddle, 2 = multiball, 3 = floor shield, 4 = extra life, 5 = double points, 6 = strong ball)</param>
+        /// <param name="_type">Type of Powerup (0 = isMagnet, 1 = long paddle, 2 = multiball, 3 = floor shield, 4 = extra life, 5 = double points, 6 = strong ball)</param>
         public PowerUp(int _xCoord, int _yCoord, int _size, int _fallSpeed, int _type)
         {
             xCoord = _xCoord;
@@ -28,11 +28,11 @@ namespace BrickBreaker
             active = false;
         }
         
-        public void Move(Paddle paddle, bool magnet)
+        public void Move(Paddle paddle, bool isMagnet)
         {
             yCoord += fallSpeed;
 
-            if (magnet == true)
+            if (isMagnet == true)
             {
                 int n = xCoord + size / 2 - paddle.x - paddle.width / 2;
 

@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Media;
 using BrickBreaker;
+using BrickBreaker.Screens;
 
 namespace BrickBreaker.Screens
 {
@@ -20,11 +21,8 @@ namespace BrickBreaker.Screens
     {
         #region global values
 
-        // Creates powerup list
-        List<PowerUp> powerUps = new List<PowerUp>();
-        List<PowerUp> activePowerUps = new List<PowerUp>();
-        
-        
+
+
         #region Stefan and Jack's values
         // Creates powerup list
         List<PowerUp> powerUps = new List<PowerUp>();
@@ -32,8 +30,8 @@ namespace BrickBreaker.Screens
 
         int longPaddleCounter = 0;
         bool longPaddle = false;
-        bool magnet = false;
-        int magnetTimer = 0;
+        bool isMagnet = false;
+        int isMagnetTimer = 0;
         bool floor = false;
         int floorTimer = 0;
 
@@ -60,31 +58,14 @@ namespace BrickBreaker.Screens
         SolidBrush paddleBrush = new SolidBrush(Color.White);
         SolidBrush ballBrush = new SolidBrush(Color.White);
         SolidBrush blockBrush = new SolidBrush(Color.Red);
-#endregion
-        
-        //player1 button control keys - DO NOT CHANGE
-        Boolean leftArrowDown, downArrowDown, rightArrowDown, upArrowDown, spaceDown, escapeDown;
 
-        // Game values
-        int lives, ticksSinceHit;
-
-        // Paddle and Ball objects
-        Paddle paddle;
-        Ball ball;
-
-        // list of all blocks
-        List<Block> blocks = new List<Block>();
 
         //list of all balls
         List<Ball> balls = new List<Ball>();
 
 
-        // Brushes
-        SolidBrush paddleBrush = new SolidBrush(Color.White);
-        SolidBrush ballBrush = new SolidBrush(Color.White);
-        SolidBrush blockBrush = new SolidBrush(Color.Red);
-        SolidBrush powerupBrush = new SolidBrush(Color.Green);
-        #endregion
+
+#endregion
 
         //checkpoint
 
@@ -98,12 +79,12 @@ namespace BrickBreaker.Screens
         {
             //Resets score
             Form1.currentScore = 0;
-            
-             #region Stefan and Jacks Powerups
+
+            #region Stefan and Jacks Powerups
             //initiate floor paddle
             floorPaddle = new Paddle(0, this.Height - 10, this.Width, 10, 0, Color.Cyan);
-#endregion
-            
+            #endregion
+
             //set life counter
             lives = 3;
 
@@ -120,7 +101,7 @@ namespace BrickBreaker.Screens
             int paddleY = (this.Height - paddleHeight) - 60;
             int paddleSpeed = 8;
             //add player 1 paddle
-            paddle = new Paddle(paddleX, paddleY, paddleWidth, paddleHeight, paddleSpeed, Color.White);          
+            paddle = new Paddle(paddleX, paddleY, paddleWidth, paddleHeight, paddleSpeed, Color.White);
 
             // setup starting ball values
             int ballX = ((this.Width / 2) - 10);
@@ -253,16 +234,16 @@ namespace BrickBreaker.Screens
             {
                 paddle.Move("right");
             }
-            
-             #region Stefan and Jacks PowerUps
 
-            if (magnetTimer > 0 && magnet == true)
+            #region Stefan and Jacks PowerUps
+
+            if (isMagnetTimer > 0 && isMagnet == true)
             {
-                magnetTimer--;
+                isMagnetTimer--;
             }
-            else if (magnetTimer <= 0 && magnet == true)
+            else if (isMagnetTimer <= 0 && isMagnet == true)
             {
-                magnet = false;
+                isMagnet = false;
             }
 
             if (longPaddle == true)
@@ -299,11 +280,11 @@ namespace BrickBreaker.Screens
 
             // Check for collision with powerups and paddle
             CollidePowerUps(paddle);
-#endregion
+            #endregion
 
             // Moves balls
             foreach (Ball b in balls)
-            { 
+            {
                 ball.Move();
             }
             // Moves powerups
@@ -360,7 +341,7 @@ namespace BrickBreaker.Screens
                         ba.y = (this.Height - paddle.height) - 85;
                     }
 
-                    
+
 
                     if (lives == 0)
                     {
@@ -399,8 +380,8 @@ namespace BrickBreaker.Screens
             {
                 e.Graphics.FillRectangle(blockBrush, b.x, b.y, b.width, b.height);
             }
-            
-             #region Stefan and Jacks Powerups
+
+            #region Stefan and Jacks Powerups
             // Draws Powerups
             DrawPowerups(e);
 
@@ -408,10 +389,10 @@ namespace BrickBreaker.Screens
             {
                 e.Graphics.FillRectangle(floorBrush, floorPaddle.x, floorPaddle.y, floorPaddle.width, floorPaddle.height);
             }
-#endregion
-            
+            #endregion
+
             DrawPowerups(e);
-            
+
             // Draws balls
             e.Graphics.FillRectangle(ballBrush, ball.x, ball.y, ball.size, ball.size);
 
@@ -424,16 +405,16 @@ namespace BrickBreaker.Screens
 
             if (n.Next(0, 1) == 0)
             {
-                PowerUp p = new PowerUp(brickX, brickY, 3, n.Next(0, 7));
+                PowerUp p = new PowerUp(brickX, brickY, 20, 3, n.Next(0, 7));
                 powerUps.Add(p);
             }
         }
 
         public void MovePowerups(List<PowerUp> powerUps)
         {
-            foreach(PowerUp p in powerUps)
+            foreach (PowerUp p in powerUps)
             {
-                p.Move(paddle);
+                p.Move(paddle, isMagnet);
             }
         }
 
@@ -457,73 +438,7 @@ namespace BrickBreaker.Screens
                 }
             }
         }
-        #endregion
         
-        #region Stefan and Jack's Powerup Methods
-        public void GeneratePowerUp(int brickX, int brickY)
-        {
-            Random n = new Random();
-
-            if (n.Next(0, 1) == 0)
-            {
-                PowerUp p = new PowerUp(brickX, brickY, 20, 3, n.Next(3, 4));
-                powerUps.Add(p);
-            }
-        }
-
-        public void MovePowerups(List<PowerUp> powerUps)
-        {
-            foreach(PowerUp p in powerUps)
-            {
-                p.Move(paddle, magnet);
-            }
-        }
-
-        public void DrawPowerups(PaintEventArgs e)
-        {
-            foreach (PowerUp p in powerUps)
-            {
-                p.DrawPowerUp(powerupBrush, e);
-            }
-        }
-
-        public void CollidePowerUps(Paddle paddle)
-        {
-            foreach (PowerUp p in powerUps)
-            {
-                if (p.Collision(paddle) == true)
-                {
-                    switch (p.type)
-                    {
-                        case 0:
-                            magnet = true;
-                            magnetTimer = 800;
-                            break;
-                        case 1:
-                            longPaddle = true;
-                            paddle.x -= 40;
-                            paddle.width += 80;
-                            break;
-                        case 2:
-                            break;
-                        case 3:
-                            floor = true;
-                            floorTimer = 800;
-                            break;
-                        case 4:
-                            lives++;
-                            break;
-                        case 5:
-                            break;
-                        case 6:
-                            break;
-                    }
-                    powerUps.Remove(p);
-                    activePowerUps.Add(p);
-                    break;
-                }
-            }
-        }
-#endregion
+        #endregion
     }
 }

@@ -1,4 +1,4 @@
-
+﻿
 //Copy of brick breaker game
 using System;
 using System.Collections.Generic;
@@ -18,7 +18,7 @@ using System.Xml;
 ///  Backup floor
 ///  additional life
 ///  double point
-///  magnet
+///  isMagnet
 /// strongball
 /// another comment   
 /// another comment again
