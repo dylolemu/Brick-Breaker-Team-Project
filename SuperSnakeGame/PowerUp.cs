@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +8,7 @@ namespace BrickBreaker
 {
     public class PowerUp
     {
-        public int xCoord, yCoord, fallSpeed, type;
+        public int xCoord, yCoord, size, fallSpeed, type;
         public bool active;
 
         /// <summary>
@@ -18,22 +18,23 @@ namespace BrickBreaker
         /// <param name="_yCoord">Y coordinate of the powerup</param>
         /// <param name="_fallSpeed">falling speed of the powerup</param>
         /// <param name="_type">Type of Powerup (0 = magnet, 1 = long paddle, 2 = multiball, 3 = floor shield, 4 = extra life, 5 = double points, 6 = strong ball)</param>
-        public PowerUp(int _xCoord, int _yCoord, int _fallSpeed, int _type)
+        public PowerUp(int _xCoord, int _yCoord, int _size, int _fallSpeed, int _type)
         {
             xCoord = _xCoord;
             yCoord = _yCoord;
+            size = _size;
             fallSpeed = _fallSpeed;
             type = _type;
             active = false;
         }
         
-        public void Move(Paddle paddle)
+        public void Move(Paddle paddle, bool magnet)
         {
             yCoord += fallSpeed;
 
-            if (active == true && type == 0)
+            if (magnet == true)
             {
-                int n = xCoord - paddle.x;
+                int n = xCoord + size / 2 - paddle.x - paddle.width / 2;
 
                 if (n > 0)
                 {
@@ -76,7 +77,7 @@ namespace BrickBreaker
                     break;
             }
 
-            e.Graphics.FillRectangle(s, xCoord, yCoord, 20, 20);
+            e.Graphics.FillEllipse(s, xCoord, yCoord, size, size);
         }
 
         public bool Collision(Paddle paddle)
