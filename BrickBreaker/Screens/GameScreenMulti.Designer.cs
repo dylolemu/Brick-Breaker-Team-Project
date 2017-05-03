@@ -39,7 +39,6 @@
             this.gameTimer.Interval = 1;
             this.gameTimer.Tick += new System.EventHandler(this.gameTimer_Tick);
             // 
-
             // hpLabelp2
             // 
             this.hpLabelp2.AutoSize = true;
@@ -61,7 +60,7 @@
             this.hpLabelp1.Size = new System.Drawing.Size(45, 16);
             this.hpLabelp1.TabIndex = 1;
             this.hpLabelp1.Text = "label1";
-            //
+            // 
             // GameScreenMulti
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -77,7 +76,6 @@
             this.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.GameScreenMulti_PreviewKeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();
-
 
         }
 
