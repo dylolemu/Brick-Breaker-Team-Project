@@ -68,6 +68,10 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Paddle.cs" />
+    <Compile Include="PauseScreen.cs">
+      <SubType>Form</SubType>
+
     <Compile Include="GameScreenMulti.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -82,15 +86,22 @@
     </Compile>
     <Compile Include="Highscore.cs" />
     <Compile Include="Paddle.cs" />
-    <Compile Include="PauseScreen.cs">
-      <SubType>UserControl</SubType>
+    <!--<Compile Include="PauseScreen.cs">-->
+      <!--<SubType>UserControl</SubType>-->
     </Compile>
     <Compile Include="PauseScreen.Designer.cs">
       <DependentUpon>PauseScreen.cs</DependentUpon>
     </Compile>
+    <Compile Include="PowerUp.cs" />
     <Compile Include="PowerUps.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Screens\GameScreenMulti.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\GameScreenMulti.Designer.cs">
+      <DependentUpon>GameScreenMulti.cs</DependentUpon>
+    </Compile>
     <Compile Include="Screens\MenuScreen.cs">
       <SubType>UserControl</SubType>
     </Compile>

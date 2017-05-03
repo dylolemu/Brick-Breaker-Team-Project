@@ -15,13 +15,12 @@ using System.Media;
 using BrickBreaker;
 using BrickBreaker.Screens;
 
+
 namespace BrickBreaker.Screens
 {
     public partial class GameScreen : UserControl
     {
         #region global values
-
-
 
         #region Stefan and Jack's values
         // Creates powerup list
@@ -45,6 +44,7 @@ namespace BrickBreaker.Screens
         Boolean leftArrowDown, downArrowDown, rightArrowDown, upArrowDown, spaceDown, escapeDown;
 
         // Game values
+
         int lives, ticksSinceHit;
 
         // Paddle and Ball objects
@@ -59,13 +59,11 @@ namespace BrickBreaker.Screens
         SolidBrush ballBrush = new SolidBrush(Color.White);
         SolidBrush blockBrush = new SolidBrush(Color.Red);
 
-
         //list of all balls
         List<Ball> balls = new List<Ball>();
 
-
-
 #endregion
+
 
         //checkpoint
 
@@ -100,6 +98,7 @@ namespace BrickBreaker.Screens
             int paddleX = ((this.Width / 2) - (paddleWidth / 2));
             int paddleY = (this.Height - paddleHeight) - 60;
             int paddleSpeed = 8;
+
             //add player 1 paddle
             paddle = new Paddle(paddleX, paddleY, paddleWidth, paddleHeight, paddleSpeed, Color.White);
 
@@ -112,6 +111,7 @@ namespace BrickBreaker.Screens
             int ySpeed = 6;
             int ballSize = 20;
             ball = new Ball(ballX, ballY, xSpeed, ySpeed, ballSize);
+
             balls.Add(ball);
 
             // Creates blocks for generic level
@@ -210,17 +210,22 @@ namespace BrickBreaker.Screens
 
         public void manuel()
         {
-            if (escapeDown == true)
+            gameTimer.Enabled = false;
+
+            DialogResult result = PauseScreen.Show("Quit the Game?", "Testing", "Yes", "No");
+
+            switch (result)
             {
-                gameTimer.Stop();
+                case DialogResult.No:
+                    gameTimer.Enabled = true;
+                    escapeDown = false;
+                    leftArrowDown = false;
+                    rightArrowDown = false;
+                    break;
 
-                Form f = this.FindForm();
-                f.Controls.Remove(this);
-
-                PauseScreen ps = new PauseScreen();
-                f.Controls.Add(ps);
-                ps.Location = new Point((this.Width - ps.Width) / 2, (this.Height - ps.Height) / 2);
-            }
+                case DialogResult.Yes:
+                    Application.Exit();
+                    break;          
         }
 
         private void gameTimer_Tick(object sender, EventArgs e)
@@ -285,7 +290,10 @@ namespace BrickBreaker.Screens
             // Moves balls
             foreach (Ball b in balls)
             {
-                ball.Move();
+                b.Move();
+                
+                // Check for collision with top and side walls
+                b.WallCollision(this);
             }
             // Moves powerups
             MovePowerups(powerUps);
@@ -293,10 +301,10 @@ namespace BrickBreaker.Screens
             // Check for collision with powerups and paddle
             CollidePowerUps(paddle);
 
-            // Check for collision with top and side walls
-            ball.WallCollision(this);
+            
 
             // Check for collision of ball with paddle, (incl. paddle movement)
+
             ticksSinceHit = ball.PaddleCollision(paddle, leftArrowDown, rightArrowDown, ticksSinceHit);
 
             foreach (Ball ba in balls)
@@ -362,6 +370,7 @@ namespace BrickBreaker.Screens
         {
             // Goes to the game over screen
             Form form = this.FindForm();
+
             LoseScreen ls = new LoseScreen();
 
             ls.Location = new Point((form.Width - ls.Width) / 2, (form.Height - ls.Height) / 2);
@@ -437,8 +446,7 @@ namespace BrickBreaker.Screens
                     break;
                 }
             }
-        }
-        
+        }       
         #endregion
     }
 }
