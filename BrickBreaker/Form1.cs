@@ -1,4 +1,4 @@
-
+﻿
 //Copy of brick breaker game
 using System;
 using System.Collections.Generic;
@@ -12,15 +12,28 @@ using System.Windows.Forms;
 using BrickBreaker.Screens;
 using System.Xml;
 
+/// <summary>
+///  Long paddle 
+///  More balls
+///  Backup floor
+///  additional life
+///  double point
+///  isMagnet
+/// strongball
+/// another comment   
+/// another comment again
+/// </summary>
 namespace BrickBreaker
 {
     public partial class Form1 : Form
     {
         // add a global value here
-
         public static List<Highscore> highscoreList = new List<Highscore>();
         public static int currentScore;
+        // add a new comment
         
+        //test comment
+
         public Form1()
         {
             InitializeComponent();

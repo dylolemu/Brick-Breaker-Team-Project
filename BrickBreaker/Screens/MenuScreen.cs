@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using BrickBreaker.Screens;
 
-
 namespace BrickBreaker.Screens
 {
     public partial class MenuScreen : UserControl

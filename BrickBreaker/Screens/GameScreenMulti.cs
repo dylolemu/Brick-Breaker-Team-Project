@@ -10,9 +10,6 @@ using System.Windows.Forms;
 using System.Media;
 using BrickBreaker;
 using BrickBreaker.Screens;
-
-
-
 namespace SuperSnakeGame.Screens
 {
     public partial class GameScreenMulti : UserControl
@@ -23,16 +20,6 @@ namespace SuperSnakeGame.Screens
         //player1 button control keys - DO NOT CHANGE
         Boolean leftArrowDown, downArrowDown, rightArrowDown, upArrowDown, spaceDown;
 
-
-        // Game values
-        int lives;
-
-        // Paddle and Ball objects
-        Paddle paddle;
-        Ball ball;
-
-        // list of all blocks
-        List<Block> blocks = new List<Block>();
 
         //player2 button control keys - DO NOT CHANGE
         Boolean aKeyDown, sKeyDown, dKeyDown, wKeyDown, qKeyDown;
@@ -66,7 +53,6 @@ namespace SuperSnakeGame.Screens
             OnStart();
         }
 
-
         public void OnStart()
         {
             //display player hp's
@@ -75,7 +61,6 @@ namespace SuperSnakeGame.Screens
 
             //initializes ticks since hit counter
             ticksSinceHit = 10;
-
 
             //set all button presses to false.
             leftArrowDown = downArrowDown = rightArrowDown = upArrowDown = false;
@@ -144,7 +129,6 @@ namespace SuperSnakeGame.Screens
             ball.WallCollision(this);
 
             // Check for collision of ball with paddle, (incl. paddle movement)
-
             ticksSinceHit = ball.PaddleCollision(paddle, leftArrowDown, rightArrowDown, ticksSinceHit);
 
             // Check if ball has collided with any blocks
@@ -196,12 +180,10 @@ namespace SuperSnakeGame.Screens
                     break;
                 case Keys.Space:
                     spaceDown = true;
-
                     break;
                 default:
                     break;
             }
-
 
             //player 2 button presses
             switch (e.KeyCode)
@@ -224,28 +206,6 @@ namespace SuperSnakeGame.Screens
                 default:
                     break;
             }
-        }
-
-
-        private void GameScreen_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
-        {
-            //player 1 button presses
-            switch (e.KeyCode)
-            {
-                case Keys.Left:
-                    leftArrowDown = true;
-                    break;
-                case Keys.Down:
-                    downArrowDown = true;
-                    break;
-                case Keys.Right:
-                    rightArrowDown = true;
-                    break;
-                case Keys.Up:
-                    upArrowDown = true;
-                    break;
-                case Keys.Space:
-                    spaceDown = true;
 
         }
 
@@ -275,7 +235,6 @@ namespace SuperSnakeGame.Screens
 
             //added by daniel
             //player 2 releases
-
             switch (e.KeyCode)
             {
                 case Keys.A:

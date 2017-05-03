@@ -25,9 +25,7 @@ namespace BrickBreaker
             y = _y;
             xSpeed = _xSpeed;
             ySpeed = _ySpeed;
-            size = _ballSize;
-               
-
+            size = _ballSize;            
         }
 
         public void Move()
@@ -56,7 +54,6 @@ namespace BrickBreaker
 
             return blockRec.IntersectsWith(ballRec);         
         }
-
 
         public int PaddleCollision(Paddle p, bool pMovingLeft, bool pMovingRight, int ticksSinceHit)
         {
