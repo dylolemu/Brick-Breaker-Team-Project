@@ -169,16 +169,22 @@ namespace BrickBreaker.Screens
 
         public void manuel()
         {
-            if (escapeDown == true)
+            gameTimer.Enabled = false;
+
+            DialogResult result = PauseScreen.Show("Quit the Game?", "Testing", "Yes", "No");
+
+            switch (result)
             {
-                gameTimer.Stop();
+                case DialogResult.No:
+                    gameTimer.Enabled = true;
+                    escapeDown = false;
+                    leftArrowDown = false;
+                    rightArrowDown = false;
+                    break;
 
-                Form f = this.FindForm();
-                f.Controls.Remove(this);
-
-                PauseScreen ps = new PauseScreen();
-                f.Controls.Add(ps);
-                ps.Location = new Point((this.Width - ps.Width) / 2, (this.Height - ps.Height) / 2);
+                case DialogResult.Yes:
+                    Application.Exit();
+                    break;
             }
         }
 
@@ -254,7 +260,7 @@ namespace BrickBreaker.Screens
             ps.Location = new Point((form.Width - ps.Width) / 2, (form.Height - ps.Height) / 2);
 
             form.Controls.Add(ps);
-            form.Controls.Remove(this);
+            //form.Controls.Remove(this);
         }
 
         public void GameScreen_Paint(object sender, PaintEventArgs e)
