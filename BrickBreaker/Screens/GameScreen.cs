@@ -12,6 +12,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Media;
+using BrickBreaker;
+using BrickBreaker.Screens;
+
 
 namespace BrickBreaker.Screens
 {
@@ -19,11 +22,30 @@ namespace BrickBreaker.Screens
     {
         #region global values
 
+        #region Stefan and Jack's values
+        // Creates powerup list
+        List<PowerUp> powerUps = new List<PowerUp>();
+        List<PowerUp> activePowerUps = new List<PowerUp>();
+
+        int longPaddleCounter = 0;
+        bool longPaddle = false;
+        bool isMagnet = false;
+        int isMagnetTimer = 0;
+        bool floor = false;
+        int floorTimer = 0;
+
+        Paddle floorPaddle;
+
+        SolidBrush powerupBrush = new SolidBrush(Color.Green);
+        SolidBrush floorBrush = new SolidBrush(Color.Cyan);
+        #endregion
+
         //player1 button control keys - DO NOT CHANGE
         Boolean leftArrowDown, downArrowDown, rightArrowDown, upArrowDown, spaceDown, escapeDown;
 
         // Game values
-        int lives;
+
+        int lives, ticksSinceHit;
 
         // Paddle and Ball objects
         Paddle paddle;
@@ -37,7 +59,11 @@ namespace BrickBreaker.Screens
         SolidBrush ballBrush = new SolidBrush(Color.White);
         SolidBrush blockBrush = new SolidBrush(Color.Red);
 
-        #endregion
+        //list of all balls
+        List<Ball> balls = new List<Ball>();
+
+#endregion
+
 
         //checkpoint
 
@@ -49,8 +75,19 @@ namespace BrickBreaker.Screens
 
         public void OnStart()
         {
+            //Resets score
+            Form1.currentScore = 0;
+
+            #region Stefan and Jacks Powerups
+            //initiate floor paddle
+            floorPaddle = new Paddle(0, this.Height - 10, this.Width, 10, 0, Color.Cyan);
+            #endregion
+
             //set life counter
             lives = 3;
+
+            //sets ticks since paddle hit to initialize at zero
+            ticksSinceHit = 100;
 
             //set all button presses to false.
             leftArrowDown = downArrowDown = rightArrowDown = upArrowDown = false;
@@ -61,6 +98,8 @@ namespace BrickBreaker.Screens
             int paddleX = ((this.Width / 2) - (paddleWidth / 2));
             int paddleY = (this.Height - paddleHeight) - 60;
             int paddleSpeed = 8;
+
+            //add player 1 paddle
             paddle = new Paddle(paddleX, paddleY, paddleWidth, paddleHeight, paddleSpeed, Color.White);
 
             // setup starting ball values
@@ -72,6 +111,8 @@ namespace BrickBreaker.Screens
             int ySpeed = 6;
             int ballSize = 20;
             ball = new Ball(ballX, ballY, xSpeed, ySpeed, ballSize);
+
+            balls.Add(ball);
 
             // Creates blocks for generic level
             blocks.Clear();
@@ -184,8 +225,7 @@ namespace BrickBreaker.Screens
 
                 case DialogResult.Yes:
                     Application.Exit();
-                    break;
-            }
+                    break;          
         }
 
         private void gameTimer_Tick(object sender, EventArgs e)
@@ -200,26 +240,118 @@ namespace BrickBreaker.Screens
                 paddle.Move("right");
             }
 
-            // Moves ball
-            ball.Move();
+            #region Stefan and Jacks PowerUps
 
-            // Check for collision with top and side walls
-            ball.WallCollision(this);
+            if (isMagnetTimer > 0 && isMagnet == true)
+            {
+                isMagnetTimer--;
+            }
+            else if (isMagnetTimer <= 0 && isMagnet == true)
+            {
+                isMagnet = false;
+            }
+
+            if (longPaddle == true)
+            {
+                longPaddleCounter++;
+                if (longPaddleCounter >= 14 && paddle.width > 80)
+                {
+                    longPaddleCounter = 0;
+                    paddle.x++;
+                    paddle.width -= 2;
+                }
+                else if (paddle.width <= 80 && longPaddleCounter >= 14)
+                {
+                    longPaddleCounter = 0;
+                    longPaddle = false;
+                }
+            }
+
+            if (floor == true && floorTimer <= 0)
+            {
+                floor = false;
+            }
+            else if (floor == true && floorTimer > 0)
+            {
+                floorTimer--;
+                if (ball.PaddleCollision(floorPaddle, false, false, 100) == 0)
+                {
+                    floorTimer = 0;
+                }
+            }
+
+            // Moves powerups
+            MovePowerups(powerUps);
+
+            // Check for collision with powerups and paddle
+            CollidePowerUps(paddle);
+            #endregion
+
+            // Moves balls
+            foreach (Ball b in balls)
+            {
+                b.Move();
+                
+                // Check for collision with top and side walls
+                b.WallCollision(this);
+            }
+            // Moves powerups
+            MovePowerups(powerUps);
+
+            // Check for collision with powerups and paddle
+            CollidePowerUps(paddle);
+
+            
 
             // Check for collision of ball with paddle, (incl. paddle movement)
-            ball.PaddleCollision(paddle, leftArrowDown, rightArrowDown);
 
-            // Check if ball has collided with any blocks
-            foreach (Block b in blocks) 
+            ticksSinceHit = ball.PaddleCollision(paddle, leftArrowDown, rightArrowDown, ticksSinceHit);
+
+            foreach (Ball ba in balls)
             {
-                if (ball.BlockCollision(b))
-                {   
-                    //decreases struck block hp and removes blocks with hp 0
-                    b.hp--;
-                    if (b.hp == 0)
-                        blocks.Remove(b);
 
-                    if (blocks.Count == 0)
+                // Check if each ball has collided with any blocks
+                foreach (Block b in blocks)
+                {
+                    if (ba.BlockCollision(b))
+
+                    {
+                        //decreases struck block hp and removes blocks with hp 0
+                        b.hp--;
+                        if (b.hp == 0)
+                            blocks.Remove(b);
+
+                        Form1.currentScore += 100;
+
+                        GeneratePowerUp(b.x, b.y);
+
+                        if (blocks.Count == 0)
+                        {
+                            gameTimer.Enabled = false;
+
+                            OnEnd();
+                        }
+
+                        break;
+                    }
+                }
+
+                // Check for ball hitting bottom of screen
+                if (ba.BottomCollision(this))
+                {
+                    if (balls.Count > 1) { balls.Remove(ba); }
+                    else
+                    {
+                        lives--;
+
+                        // Moves the ball back to origin
+                        ba.x = ((paddle.x - (ba.size / 2)) + (paddle.width / 2));
+                        ba.y = (this.Height - paddle.height) - 85;
+                    }
+
+
+
+                    if (lives == 0)
                     {
                         gameTimer.Enabled = false;
 
@@ -227,23 +359,6 @@ namespace BrickBreaker.Screens
                     }
 
                     break;
-                }
-            }
-
-            // Check for ball hitting bottom of screen
-            if (ball.BottomCollision(this))
-            {
-                lives--;
-
-                // Moves the ball back to origin
-                ball.x = ((paddle.x - (ball.size / 2)) + (paddle.width / 2));
-                ball.y = (this.Height - paddle.height) - 85;
-
-                if (lives == 0)
-                {
-                    gameTimer.Enabled = false;
-
-                    OnEnd();
                 }
             }
 
@@ -255,12 +370,13 @@ namespace BrickBreaker.Screens
         {
             // Goes to the game over screen
             Form form = this.FindForm();
-            MenuScreen ps = new MenuScreen();
 
-            ps.Location = new Point((form.Width - ps.Width) / 2, (form.Height - ps.Height) / 2);
+            LoseScreen ls = new LoseScreen();
 
-            form.Controls.Add(ps);
-            //form.Controls.Remove(this);
+            ls.Location = new Point((form.Width - ls.Width) / 2, (form.Height - ls.Height) / 2);
+
+            form.Controls.Add(ls);
+            form.Controls.Remove(this);
         }
 
         public void GameScreen_Paint(object sender, PaintEventArgs e)
@@ -273,9 +389,64 @@ namespace BrickBreaker.Screens
             {
                 e.Graphics.FillRectangle(blockBrush, b.x, b.y, b.width, b.height);
             }
-            
+
+            #region Stefan and Jacks Powerups
+            // Draws Powerups
+            DrawPowerups(e);
+
+            if (floor == true)
+            {
+                e.Graphics.FillRectangle(floorBrush, floorPaddle.x, floorPaddle.y, floorPaddle.width, floorPaddle.height);
+            }
+            #endregion
+
+            DrawPowerups(e);
+
             // Draws balls
             e.Graphics.FillRectangle(ballBrush, ball.x, ball.y, ball.size, ball.size);
+
         }
+
+        #region Stefan and Jack's Powerup Methods
+        public void GeneratePowerUp(int brickX, int brickY)
+        {
+            Random n = new Random();
+
+            if (n.Next(0, 1) == 0)
+            {
+                PowerUp p = new PowerUp(brickX, brickY, 20, 3, n.Next(0, 7));
+                powerUps.Add(p);
+            }
+        }
+
+        public void MovePowerups(List<PowerUp> powerUps)
+        {
+            foreach (PowerUp p in powerUps)
+            {
+                p.Move(paddle, isMagnet);
+            }
+        }
+
+        public void DrawPowerups(PaintEventArgs e)
+        {
+            foreach (PowerUp p in powerUps)
+            {
+                p.DrawPowerUp(powerupBrush, e);
+            }
+        }
+
+        public void CollidePowerUps(Paddle paddle)
+        {
+            foreach (PowerUp p in powerUps)
+            {
+                if (p.Collision(paddle) == true)
+                {
+                    powerUps.Remove(p);
+                    activePowerUps.Add(p);
+                    break;
+                }
+            }
+        }       
+        #endregion
     }
 }

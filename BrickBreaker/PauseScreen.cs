@@ -10,6 +10,7 @@ using System.Windows.Forms;
 
 namespace BrickBreaker.Screens
 {
+
     public partial class PauseScreen : Form
     {
         public PauseScreen()
@@ -40,6 +41,7 @@ namespace BrickBreaker.Screens
         {
             result = DialogResult.No;
             this.Close();
+
         }
     }
 }

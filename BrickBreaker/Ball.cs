@@ -27,6 +27,7 @@ namespace BrickBreaker
             ySpeed = _ySpeed;
             size = _ballSize;
                
+
         }
 
         public void Move()
@@ -56,48 +57,48 @@ namespace BrickBreaker
             return blockRec.IntersectsWith(ballRec);         
         }
 
-        public void PaddleCollision(Paddle p, bool pMovingLeft, bool pMovingRight)
+
+        public int PaddleCollision(Paddle p, bool pMovingLeft, bool pMovingRight, int ticksSinceHit)
         {
             Rectangle ballRec = new Rectangle(x, y, size, size);
             Rectangle paddleRec = new Rectangle(p.x, p.y, p.width, p.height);
+            Rectangle intersectionRec = Rectangle.Intersect(ballRec, paddleRec);
 
-            if (ballRec.IntersectsWith(paddleRec))
+            ticksSinceHit++;
+
+            if (ballRec.IntersectsWith(paddleRec) && ticksSinceHit >= 60)
             {
-                if (y + size >= p.y)
-                {
-                    if ((x + size) < p.x && (y + size) > p.y)
-                    {
-                        xSpeed = -Math.Abs(xSpeed);
-                        ySpeed = Math.Abs(ySpeed);
 
-                        //corrects paddle sticking glitch
-                        if (xSpeed >= 0)
-                            xSpeed = -Math.Abs(xSpeed);
-                        if (ySpeed <= 0)
-                            ySpeed = Math.Abs(ySpeed);
-                    }
-                    else if (x > (p.x + p.width) && (y + size) > p.y)
-                    {
-                        xSpeed = Math.Abs(xSpeed);
-                        ySpeed = Math.Abs(ySpeed);
+                Point intersect = intersectionRec.Location;
+                int intersectX = intersect.X;
 
-                        //corrects paddle sticking glitch
-                        if (xSpeed <= 0)
-                            xSpeed = Math.Abs(xSpeed);
-                        if (ySpeed <= 0)
-                            ySpeed = Math.Abs(ySpeed);
-                    }
-                    else
-                    {
-                        ySpeed *= -1;
-                    }
+
+                if (x < p.x && (y + size) > p.y)
+                { 
+                    xSpeed = -Math.Abs(xSpeed);
+                    ySpeed = -Math.Abs(ySpeed);
                 }
+                else if (x + size > (p.x + p.width) && (y + size) > p.y)
+                {
+                    xSpeed = Math.Abs(xSpeed);
+                    ySpeed = -Math.Abs(ySpeed);
+                }
+                else
+                {
+                    ySpeed = -Math.Abs(ySpeed);
 
+                }
                 if (pMovingLeft)
                     xSpeed = -Math.Abs(xSpeed);
                 else if (pMovingRight)
                     xSpeed = Math.Abs(xSpeed);
+
+                //returns 0 if collision occurs, resetting the number of ticks since the last collision
+                return 0;             
             }
+
+            //returns the same value entered if no collision
+            return ticksSinceHit;
         }
 
         public void WallCollision(UserControl UC)
@@ -142,6 +143,5 @@ namespace BrickBreaker
 
             return didCollide;
         }
-
     }
 }

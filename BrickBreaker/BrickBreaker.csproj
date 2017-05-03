@@ -71,6 +71,23 @@
     <Compile Include="Paddle.cs" />
     <Compile Include="PauseScreen.cs">
       <SubType>Form</SubType>
+
+    <Compile Include="GameScreenMulti.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GameScreenMulti.designer.cs">
+      <DependentUpon>GameScreenMulti.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\LoseScreen.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\LoseScreen.Designer.cs">
+      <DependentUpon>LoseScreen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Highscore.cs" />
+    <Compile Include="Paddle.cs" />
+    <!--<Compile Include="PauseScreen.cs">-->
+      <!--<SubType>UserControl</SubType>-->
     </Compile>
     <Compile Include="PauseScreen.Designer.cs">
       <DependentUpon>PauseScreen.cs</DependentUpon>
@@ -97,11 +114,12 @@
     <Compile Include="Screens\GameScreen.Designer.cs">
       <DependentUpon>GameScreen.cs</DependentUpon>
     </Compile>
+    <Compile Include="PowerUp.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PauseScreen.resx">
-      <DependentUpon>PauseScreen.cs</DependentUpon>
+    <EmbeddedResource Include="GameScreenMulti.resx">
+      <DependentUpon>GameScreenMulti.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -113,8 +131,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="Screens\GameScreenMulti.resx">
-      <DependentUpon>GameScreenMulti.cs</DependentUpon>
+    <EmbeddedResource Include="Screens\LoseScreen.resx">
+      <DependentUpon>LoseScreen.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Screens\MenuScreen.resx">
       <DependentUpon>MenuScreen.cs</DependentUpon>

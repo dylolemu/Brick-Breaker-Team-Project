@@ -10,10 +10,7 @@ using System.Windows.Forms;
 using System.Media;
 using BrickBreaker;
 using BrickBreaker.Screens;
-
-
-
-namespace SuperSnakeGame.Screens
+namespace BrickBreaker
 {
     public partial class GameScreenMulti : UserControl
     {
@@ -23,16 +20,6 @@ namespace SuperSnakeGame.Screens
         //player1 button control keys - DO NOT CHANGE
         Boolean leftArrowDown, downArrowDown, rightArrowDown, upArrowDown, spaceDown;
 
-
-        // Game values
-        int lives;
-
-        // Paddle and Ball objects
-        Paddle paddle;
-        Ball ball;
-
-        // list of all blocks
-        List<Block> blocks = new List<Block>();
 
         //player2 button control keys - DO NOT CHANGE
         Boolean aKeyDown, sKeyDown, dKeyDown, wKeyDown, qKeyDown;
@@ -55,6 +42,7 @@ namespace SuperSnakeGame.Screens
 
         // Brushes
         SolidBrush paddleBrush = new SolidBrush(Color.White);
+
         SolidBrush ballBrush = new SolidBrush(Color.White);
         SolidBrush blockBrush = new SolidBrush(Color.Red);
 
@@ -66,7 +54,6 @@ namespace SuperSnakeGame.Screens
             OnStart();
         }
 
-
         public void OnStart()
         {
             //display player hp's
@@ -75,7 +62,6 @@ namespace SuperSnakeGame.Screens
 
             //initializes ticks since hit counter
             ticksSinceHit = 10;
-
 
             //set all button presses to false.
             leftArrowDown = downArrowDown = rightArrowDown = upArrowDown = false;
@@ -111,71 +97,31 @@ namespace SuperSnakeGame.Screens
             blocks2p.Clear();
             int x = 10;
             
+            
+
+            //blocks in this mode will always be the same
+            while (blocks1p.Count < 12)
+            {
+                x += 57;
+                Block b = new Block(x, 10, 1, Color.White);
+                blocks1p.Add(b);
+            }
+
+            x = 10;
+
             //blocks in this mode will always be the same
             while (blocks2p.Count < 12)
             {
                 x += 57;
-                Block b1 = new Block(x, 10, 1, Color.White);
+                Block b = new Block(x, 500, 1, Color.White);
+                blocks2p.Add(b);
 
-                blocks2p.Add(b1);
-                blocks.Add(b1);
             }
 
             // start the game engine loop
             gameTimer.Enabled = true;
         }
-        //TODO change to work for 2p
-        private void gameTimer_Tick(object sender, EventArgs e)
-        {
-            // Move the paddle
-            if (leftArrowDown && paddle.x > 0)
-            {
-                paddle.Move("left");
-            }
-            if (rightArrowDown && paddle.x < (this.Width - paddle.width))
-            {
-                paddle.Move("right");
-            }
-
-            // Moves ball
-            ball.Move();
-
-            // Check for collision with top and side walls
-            ball.WallCollision(this);
-
-            // Check for collision of ball with paddle, (incl. paddle movement)
-
-            ticksSinceHit = ball.PaddleCollision(paddle, leftArrowDown, rightArrowDown, ticksSinceHit);
-
-            // Check if ball has collided with any blocks
-            foreach (Block b in blocks)
-            {
-                if (ball.BlockCollision(b))
-                {
-                    blocks.Remove(b);
-
-                    if (blocks.Count == 0)
-                    {
-                        gameTimer.Enabled = false;
-
-                        OnEnd();
-                    }
-
-                    break;
-                }
-            }
-            x = 10;
-            while (blocks1p.Count < 12)
-            {
-                
-                x += 57;
-                Block b2 = new Block(x, 500, 1, Color.White);
-                blocks1p.Add(b2);
-            }
-
-            // start the game engine loop
-            gameTimer.Enabled = true;
-        }
+       
 
         private void GameScreenMulti_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
@@ -196,12 +142,10 @@ namespace SuperSnakeGame.Screens
                     break;
                 case Keys.Space:
                     spaceDown = true;
-
                     break;
                 default:
                     break;
             }
-
 
             //player 2 button presses
             switch (e.KeyCode)
@@ -224,28 +168,6 @@ namespace SuperSnakeGame.Screens
                 default:
                     break;
             }
-        }
-
-
-        private void GameScreen_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
-        {
-            //player 1 button presses
-            switch (e.KeyCode)
-            {
-                case Keys.Left:
-                    leftArrowDown = true;
-                    break;
-                case Keys.Down:
-                    downArrowDown = true;
-                    break;
-                case Keys.Right:
-                    rightArrowDown = true;
-                    break;
-                case Keys.Up:
-                    upArrowDown = true;
-                    break;
-                case Keys.Space:
-                    spaceDown = true;
 
         }
 
@@ -275,7 +197,6 @@ namespace SuperSnakeGame.Screens
 
             //added by daniel
             //player 2 releases
-
             switch (e.KeyCode)
             {
                 case Keys.A:
@@ -328,8 +249,8 @@ namespace SuperSnakeGame.Screens
 
             // Check for collision of ball with paddle, (incl. paddle movement)
 
-            ball.PaddleCollision(paddle, leftArrowDown, rightArrowDown);
-            ball.PaddleCollision(paddle2, aKeyDown, dKeyDown);
+            ticksSinceHit = ball.PaddleCollision(paddle, leftArrowDown, rightArrowDown, ticksSinceHit);
+            ticksSinceHit = ball.PaddleCollision(paddle2, aKeyDown, dKeyDown, ticksSinceHit);
 
             // Check if ball has collided with any of player 1 blocks
             foreach (Block b in blocks1p)
